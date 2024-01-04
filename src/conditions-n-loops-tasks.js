@@ -302,8 +302,21 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  let leftSum = 0;
+  let rightSum = 0;
+
+  for (let i = 1; i < arr.length; i += 1) {
+    rightSum += arr[i];
+  }
+
+  for (let i = 0; i < arr.length; i += 1) {
+    if (leftSum === rightSum) return i;
+    leftSum += arr[i];
+    rightSum -= arr[i + 1];
+  }
+
+  return -1;
 }
 
 /**
@@ -327,8 +340,38 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const spiralArr = [];
+  for (let i = 0; i < size; i += 1) {
+    spiralArr[i] = [];
+    for (let j = 0; j < size; j += 1) {
+      spiralArr[i][j] = 0;
+    }
+  }
+  let counter = 1;
+  let start = 0;
+  let end = size - 1;
+  while (counter <= size * size) {
+    for (let i = start; i <= end; i += 1) {
+      spiralArr[start][i] = counter;
+      counter += 1;
+    }
+    for (let i = start + 1; i <= end; i += 1) {
+      spiralArr[i][end] = counter;
+      counter += 1;
+    }
+    for (let i = end - 1; i >= start; i -= 1) {
+      spiralArr[end][i] = counter;
+      counter += 1;
+    }
+    for (let i = end - 1; i >= start + 1; i -= 1) {
+      spiralArr[i][start] = counter;
+      counter += 1;
+    }
+    start += 1;
+    end -= 1;
+  }
+  return spiralArr;
 }
 
 /**
@@ -346,8 +389,22 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const copy = [];
+  for (let i = 0; i < matrix.length; i += 1) {
+    copy[i] = [];
+    for (let j = 0; j < matrix[0].length; j += 1) {
+      copy[i][j] = matrix[i][j];
+    }
+  }
+
+  const shallowCopy = matrix;
+  for (let i = 0; i < copy.length; i += 1) {
+    for (let j = 0; j < copy[0].length; j += 1) {
+      shallowCopy[i][j] = copy[copy.length - j - 1][i];
+    }
+  }
+  return shallowCopy;
 }
 
 /**
@@ -364,8 +421,34 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const sortArr = arr;
+  const sortFunction = (arr2, leftItem = 0, rightItem = arr2.length - 1) => {
+    if (leftItem >= rightItem) return;
+
+    const middleItem = arr2[Math.floor((leftItem + rightItem) / 2)];
+
+    let i = leftItem;
+    let j = rightItem;
+
+    while (i <= j) {
+      while (arr2[i] < middleItem) i += 1;
+      while (arr2[j] > middleItem) j -= 1;
+
+      if (i <= j) {
+        [sortArr[i], sortArr[j]] = [arr2[j], arr2[i]];
+        i += 1;
+        j -= 1;
+      }
+    }
+
+    if (leftItem < j) sortFunction(arr2, leftItem, j);
+    if (i < rightItem) sortFunction(arr2, i, rightItem);
+  };
+
+  sortFunction(sortArr);
+
+  return sortArr;
 }
 
 /**
