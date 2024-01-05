@@ -303,19 +303,18 @@ function isContainNumber(num, digit) {
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
 function getBalanceIndex(arr) {
-  let leftSum = 0;
-  let rightSum = 0;
-
-  for (let i = 1; i < arr.length; i += 1) {
-    rightSum += arr[i];
+  if (arr.length < 3) return -1;
+  for (let mid = 1; mid < arr.length; mid += 1) {
+    let sumLeft = 0;
+    let sumRight = 0;
+    for (let i = 0; i < mid - 1; i += 1) {
+      sumLeft += arr[i];
+    }
+    for (let i = mid; i < arr.length; i += 1) {
+      sumRight += arr[i];
+    }
+    if (sumLeft === sumRight) return mid - 1;
   }
-
-  for (let i = 0; i < arr.length; i += 1) {
-    if (leftSum === rightSum) return i;
-    leftSum += arr[i];
-    rightSum -= arr[i + 1];
-  }
-
   return -1;
 }
 
@@ -468,8 +467,26 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let curRes = str;
+  const res = [curRes];
+  for (let i = 1; i <= iterations; i += 1) {
+    let left = '';
+    let right = '';
+    for (let j = 0; j < curRes.length; j += 1) {
+      if (j % 2 === 0) {
+        left += curRes[j];
+      } else {
+        right += curRes[j];
+      }
+    }
+    curRes = left + right;
+    if (curRes === str) {
+      return res[iterations % res.length];
+    }
+    res[i] = curRes;
+  }
+  return curRes;
 }
 
 /**
@@ -489,8 +506,42 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const arr = [];
+  let curNumber = number;
+  while (curNumber > 0) {
+    const last = curNumber % 10;
+    arr.push(last);
+    curNumber = Math.floor(curNumber / 10);
+  }
+
+  for (let i = 1; i < arr.length; i += 1) {
+    if (arr[i] < arr[i - 1]) {
+      let minIndex = i - 1;
+      let min = arr[i - 1];
+      for (let j = 0; j < i; j += 1) {
+        if (arr[j] > arr[i] && arr[j] < min) {
+          min = arr[j];
+          minIndex = j;
+        }
+      }
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+      for (let k = 0; k < i - 1; k += 1) {
+        for (let l = 0; l < i - k - 1; l += 1) {
+          if (arr[l] < arr[l + 1]) {
+            [arr[l], arr[l + 1]] = [arr[l + 1], arr[l]];
+          }
+        }
+      }
+      break;
+    }
+  }
+
+  let res = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    res += 10 ** i * arr[i];
+  }
+  return res;
 }
 
 module.exports = {
